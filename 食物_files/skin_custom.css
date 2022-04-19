@@ -1,0 +1,88 @@
+@charset "UTF-8";
+@font-face {
+  font-family: flowplayer_custom;
+  src: url("icons/flowplayer_custom.woff") format("woff");
+  }
+
+
+.fp-fullscreen:before {
+  font-family: flowplayer_custom !important;
+  content: "\e901"!important;
+  font-size: 1.4em;
+}
+
+.flowplayer.is-fullscreen .fp-fullscreen:before {
+  content: "\e902"!important;
+  font-size: 1.4em;
+  }
+
+.fp-search:before {
+  font-family: flowplayer_custom;
+  content: "\e905";
+  font-size: 1.4em;
+}
+
+.flowplayer .fp-menu.fp-playtype-menu{
+  width: 9.2em;
+}
+
+.fp-playtype:before {
+  font-family: flowplayer_custom;
+  content: "\e903";
+  font-size: 1.4em;
+}
+
+.is-repeat .fp-playtype:before {
+  content: "\e904";
+}
+
+.is-shuffle .fp-playtype:before {
+  content: "\e906";
+}
+
+.is-ab .fp-playtype:before {
+  content: "\e900";
+}
+
+.flowplayer .fp-search-menu {
+  width: 12em;
+}
+
+.fp-search-menu div{
+  width: 100%
+  float: left;
+}
+
+.flowplayer .fp-search-menu input{
+  width: 100%;
+  padding: 2px 6px;
+  background: rgba(255,255,255,0.3);
+  border: none;
+  color: #fff;
+}
+
+.flowplayer .fp-ab-menu{
+  width: 12em;
+}
+
+.flowplayer .fp-ab-menu span{
+  background: #fff;
+  color: #000;
+}
+
+.flowplayer .fp-ab-menu input[type="text"]{
+  width: 2em;
+  border: none;
+}
+
+.without_ampm::-webkit-datetime-edit-ampm-field {
+   display: none;
+ }
+ input[type=time]::-webkit-clear-button {
+   -webkit-appearance: none;
+   -moz-appearance: none;
+   -o-appearance: none;
+   -ms-appearance:none;
+   appearance: none;
+   margin: -10px; 
+ }

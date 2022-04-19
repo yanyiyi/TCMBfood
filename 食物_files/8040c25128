@@ -1,0 +1,211 @@
+
+
+
+
+
+
+ 
+<!DOCTYPE html>
+<html lang="zh-tw">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta content="width=device-width" name="viewport">
+		<link rel="stylesheet" type="text/css" href="/player/skin/skin.css" />
+		<link rel="stylesheet" type="text/css" href="/player/flowplayer.audio.css">
+		<script src="/js/libs/jquery/jquery.min.js"></script>
+<script src="/js/libs/jquery/jquery-migrate-3.3.2.min.js"></script>
+
+		<script src="/player/hls.min.js"></script>
+		<script src="/player/flowplayer.js"></script>
+		<script src="/player/flowplayer.thumbnails.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="/js/libs/flowplayer/custom/skin_custom.css" />
+		<script src="/player/flowplayer.audio.min.js"></script>
+		<script src="/player/flowplayer_config.js"></script>
+		<script type="text/javascript" src="/dwr/engine.js"> </script>
+		<script type="text/javascript" src="/dwr/interface/MediaRecordHandler.js"> </script> 
+		<style type="text/css">
+			html {
+				overflow: hidden;
+			}
+			body {
+				margin:0;
+				padding:0;
+				overflow: hidden;
+			}
+			.flowplayer.is-playing {
+				background-color:#000;
+			}
+			.no_video {
+				text-align:center;
+				padding-top:20%;
+				font-size:1.6em;
+			}
+			.no_video .info {
+				display:block;
+				color:#00F;
+			}
+			
+			.keyboard_shortcuts {
+				position: absolute;
+				width: 1px;
+				height: 1px;
+				padding: 0;
+				margin: -1px;
+				overflow: hidden;
+				clip: rect(0,0,0,0);
+				border: 0;
+			}
+			
+			@media screen and (max-width: 480px) {
+				.flowplayer .fp-qsel {
+					display:none;
+				}
+			}
+			
+			@media screen and (max-width: 240px) {
+				.flowplayer .fp-volumebar {
+					display:none;
+				}
+			}
+		</style>
+	</head>
+	<body>
+			
+			
+	
+    	<!-- 影片區 -->
+     	
+			
+			<div id="my_player" tabindex="0">
+				<div class="keyboard_shortcuts">
+					<dl>
+						<dt>影音播放器功能快捷鍵：</dt>
+						<dd>空白鍵：播放/暫停</dd>
+						<dd>M：靜音/關閉靜音</dd>
+						<dd>方向上鍵：增加音量</dd>
+						<dd>方向下鍵：降低音量</dd>
+						<dd>方向左鍵：時間前進</dd>
+						<dd>方向右鍵：時間快進</dd>
+						<dd>F：全螢幕</dd>
+					</dl>
+				</div>
+				
+   
+											<div class="fp-menu fp-playtype-menu fp-custom-menu" data-menu="playtype" style="top:-9999em; display: none;">
+												<strong>播放模式</strong>
+										        <a title="循環播放" data-playtype="is-default" class="fp-selected">循環播放</a>
+										        <a title="重複一首" data-playtype="is-repeat">重複一首</a>
+										        <a title="隨機播放" data-playtype="is-shuffle">隨機播放</a>
+										        <a title="A/B段播放" data-playtype="is-ab">A/B段播放</a>
+										    </div>
+										    <div class="fp-menu fp-ab-menu fp-custom-menu" data-menu="search" style="top:-9999em;  display: none;">
+										        <strong>A/B段設定</strong>
+										        <div>
+													起：<span><input type="text" id="start_hh" value="00">:<input type="text" id="start_mm" value="00">:<input type="text" id="start_ss" value="00"></span>
+										        </div>
+										        <div>
+										            迄：<span><input type="text" id="end_hh" value="00">:<input type="text" id="end_mm" value="00">:<input type="text" id="end_ss" value="00"></span>
+										        </div>
+										        <div>
+										            <input type="submit" value="設定" id="fp-ab-set" style="background-color: #00F;">
+										        </div>
+											</div>
+										    <div class="fp-menu fp-search-menu fp-custom-menu" data-menu="search" style="top:-9999em;  display: none;">
+												<strong>搜尋字幕</strong>
+												<div>
+													<select class="_select2_ajax"></select>
+												</div>
+										    </div>
+										    <!-- 字幕搜索  將你要綁定的select元件class放入 -->
+											
+   
+
+    
+    <!-- 專門處理字幕搜索 -->
+    <link rel="stylesheet" href="/js/libs/select2/4.0.5/select2.min.css" />
+	<script src="/js/libs/select2/4.0.5/select2.min.js"></script>
+	<script src="/js/libs/select2/4.0.5/i18n/zh-TW.js"></script>
+	
+
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$('._select2_ajax').select2({
+			width : "100%",
+			language: "zh-TW",
+			ajax : 
+			    {
+			        url: "/media_subtitle_search/",
+			 		dataType: 'json',
+			       	data: function (params) {
+			          var keyword = "";
+			       		if(params.term){
+			       			keyword = params.term;
+			       		}
+			       			
+			           var query = {
+					        keyword: keyword
+     						}
+			           return query;
+			        },
+			 
+			        //成功返回的項目
+			        processResults: function (data) 
+			        { 
+			            var rr = {
+					        results: data
+					     };
+			            return rr;
+			        }
+			    }
+			}).on("select2:select", function (e) {
+				var val = $(this).val();
+				if(val != null){
+					player_seek(parseFloat($(this).val() , 10));
+					$(this).val([]).trigger('change');
+					$('.fp-menu.fp-active','.fp-ui').removeClass('fp-active').css('top','-9999em');
+				}
+			});
+	});	
+	</script>
+											<!-- 字幕搜索-->
+
+			</div>
+			<script type="text/javascript">
+				var media_id = 127208;
+				fp_swf_url = '/player/flowplayer.swf';
+				fp_swfhls_url = '/player/flowplayerhls.swf';
+				fp_poster = '/image/127208?size=m';
+				fp_autoplay = false;
+				fp_add_media(media_id);
+				fp_muted = 0;
+				</script>
+				
+				
+				<script type="text/javascript">
+					var subtitles = new Array();
+				</script>
+				
+				
+       
+    		
+					
+						
+						
+							<script type="text/javascript">	
+								var eachNosolution = 0;
+								var sources = [
+									{'type': 'application/x-mpegurl', 'src':'https://vod.imedia.culture.tw/s3vod/_definst_/smil:hiclouds3/imedia-multimedias/nhclac/127208/b94d1209e75442e5947d5b43f483f6fe.smil/playlist.m3u8?iframe_type=iframe&iframe_record_id=12471457'},
+									{'type': 'video/mp4', 'src':'/s3/uq/8040c25128.mp4?api_access_key=51c5acd4-1aa4-4013-a020-e9ddbc4bfae4&iframe_type=iframe&iframe_record_id=12471457'},
+									{'type': 'video/webm', 'src':'/s3/uq/8040c25128.webm?api_access_key=51c5acd4-1aa4-4013-a020-e9ddbc4bfae4&iframe_type=iframe&iframe_record_id=12471457'}
+								];
+								fp_add_formal(sources, '', false, false, eachNosolution == 1, '/image/127208?size=m' , subtitles);
+							</script>						
+						
+					
+				
+			
+			
+			
+		
+	</body>
+</html><!-- random-length HTML comment: T2WPC8GyDYJvIXMAZO9qEIEe4W5M4rJNjebjcfXe4hPA2aAPo95qF8K7SFJNuRYSvz1LTPpNu3NmTL07JvlMtvKCyTPjil1TZqds3I3nBEOUNEPWxyhhjrhY8u5hVuyuaRaUYT5XXHqlJ357sccRJ7nGrgnAQZtprJ7Db0ay8GXHATCste71bl7GFkFW9y9o54rUuIJsOgyMx04hT2YsbVzg3200ozfjtK4cQBIff6rTvkyEcMw1fjXWbMMD9plr0dJEeRj7OPQ9xCBNOvErTZDslOwl1XQp0ZuSqRP2eezRgyetkga36clfoXEfsULit30YKEQpiE6E2Zxc5MT1m3XQQZt7u2fdvU16YGj4Kf8A4uby6uninAw2adzIWSlHkbB6hk0pExn6hEubzY7aWtSuMF2gWco43n1YOpBScoO7t9YgVV6rCNcPQUtmuXfnBWBN9AfcprZYow49HyrKBHXSZG2KcXvbrvorvHHaygwbSoaYdFicK3sk7lsZ6dyoOcVAhaYU6JvNxJjOPFrX8Z758nT5HHhVi0TFQqXKzIVkQ4zd9e051w1yZIrgPO0vCHzSxMckTwLjq8Cqa2lPoaDEguiu6Wf8eUOPhp00b9ZH7ZvVRVk4to6QWeARzdPTycgTHUJiTgpQ5ZjKuKEdwArGdpXSJlj7DFQKaXst3V8wuh6cp96b7liaR3qaePVhTjpt6XaxrWhb2d4fay7YXdwoWbE1qXW76Co2XFnEZKePmWvCIqYfJJKdkMSOkpMep0XC3AFRJjgv3PvB5KgCTog11yFZdR3GGOJ9NMQW -->
